@@ -140,7 +140,8 @@ int main(int argc, char *argv[])
     stopover=RUNS;
     //cout<<"RUNS:"<<RUNS<<" tau:"<<tau<<" sel:"<<sel<<" initgen:"
     //<<initgen<<" stopover:"<<stopover<<" dominace:"<<DOM<<" m:"<<m<<"\n";
-
+    gent.seed(time(NULL));
+    BRand::Controller.seed(time(NULL));
 
     std::uniform_real_distribution<double> mt_rand{0.0, 1.0};
 
@@ -150,7 +151,7 @@ int main(int argc, char *argv[])
     pops[1]= new population(popsize(0,0));
 
     int euroflag=0;
-    double halftheta=2*popsize(initgen,0)*Urate;
+    double halftheta=2*popsize(initgen,0)*mutU;
     double p1=1./(1.+ratio*exp((2*popsize(initgen,0)-1)*sel)*(1-(2*DOM-1)*(2*popsize(initgen,0)-1)*sel*sel/(12*popsize(initgen,0))) );
     //cout<<"P1:"<<halftheta<<",popsize:"<<popsize(initgen,0)<<"\n";
     //map<int,int> count[2],counts[2][2],countd[2],taucount,taucountd;
@@ -159,8 +160,8 @@ int main(int argc, char *argv[])
     int gen,thispop;
     double baseup=(1./halftheta);
     double basedown=(1./(ratio*halftheta));
-    double oneovertwoU=(1./(2*Urate));
-    double oneovertwoUratio=(1./(2*Urate*ratio));
+    double oneovertwoU=(1./(2*mutU));
+    double oneovertwoUratio=(1./(2*mutU*ratio));
     //int initialstate,zeroruns=0,oneruns=0;
     int skip=0,stretch;
     time_t tt;
@@ -169,20 +170,20 @@ int main(int argc, char *argv[])
     char outputNameEur[200], outputNameAfr[200], outputNameMut[200];
     double Ep,s1,S2N,Ep2,Ex,Exderived,s12,Ex2,Ex4,Dx,Dx2;
     double europ, euros1, eurox, euroS2N;
+    double totfreq;
     int age=0;
     int tauallele,before, after;
     freqs f;
-
     ofstream myfile,results,afrDistrib,eurDistrib,mutDistribution;
 
     for(int run=0;run<RUNS;run++)
             {
             gen=initgen;
             idx=0;
-            double Uvar = lognormal(mutU);
-            //double Uvar = mutU;
+            double Uvar = mutU;
             double halfthetaVAR = 2*popsize(initgen,0)*Uvar;
             double baseupVAR = (1./halfthetaVAR);
+            double basedownVAR = (1./halfthetaVAR);
 
             pops[0]->size=popsize(gen,0); //Initializing the population size for the beginning of each run with deleterious allele absent from the population
 
@@ -194,22 +195,33 @@ int main(int argc, char *argv[])
 
             while (gen>0)
                     {
-          if (gen==tau) //tau is the generation of the out of Africa exodus.
-                      {
-                        euroflag=1;
-                        *pops[1]=*pops[0]; //Creating the European population from the African population.
+          //if (gen==tau) //tau is the generation of the out of Africa exodus.
+            //          {
+                        //euroflag=1;
+                        //*pops[1]=*pops[0]; //Creating the European population from the African population.
                         //taufreq=pops[0]->freq(); //Keeping track of deleterious allele frequencies at the split for calculation of the change in frequency since the split
-                      }
+              //        }
 		      if (gen==920) m=0.000025;
+          if (euroflag==1) //Keep the derived allele derived
+      {totfreq=0.5*(pops[0]->freq()+pops[1]->freq());
+        if (totfreq==1) {pops[0]->clear();pops[1]->clear();totfreq=0.0;}
+      }
+          else
+      {totfreq=pops[0]->freq();
+        if (totfreq==1) {pops[0]->clear();totfreq=0.0;}
+      }
 
-		      for(int i=0;i<(1+euroflag);i++)
+		      for(int i=0;i<(1);i++)
                     {
 		      if (((pops[i]->allelenum()>0)&&(pops[i]->allelenum()<(2*pops[i]->size)))||(gen<=taujump)) //If the allele is segregating or we are in recent history (last 5920 generations), introduce mutations
                         {
                             pops[i]->mutateup(boost_poi( Uvar*(2*pops[i]->size-pops[i]->allelenum()) )) ;
+                            pops[i]->mutatedown(boost_poi( Uvar*pops[i]->allelenum())) ;
+                            //cout << Uvar << " " << Uvar*(2*pops[i]->size-pops[i]->allelenum()) << " " << Uvar*pops[i]->allelenum() << "\n";
                         }
 		      else if (pops[i]->allelenum()==0) //If the ancestral allele is fixed calculate when will the next deleterious allele appear and advance population state to that point in time (unless that point in time is in recent history; then just set time to initial history).
                         {
+                             //pops[i]->clear();
                              //cout << BRand::Controller.nextOpened() << endl;
                              //cout<< "mt:" << mt_rand(gent) << endl;
                              gen-=int(-log( mt_rand(gent))*baseupVAR);
@@ -223,13 +235,14 @@ int main(int argc, char *argv[])
                         }
                         else if (pops[i]->allelenum()==(2*pops[i]->size))//If the deleterious allele is fixed calculate when will the next deleterious allele appear and advance population state to that point in time (unless that point in time is in recent history and then just set time to initial history). Note that with s = 1 this cannot happen
                         {
-                             gen-=int(-log( mt_rand(gent))*basedown);
+                             //pops[i]->clear();
+                             gen-=int(-log(mt_rand(gent))*basedownVAR);
                              if (gen<=taujump)
                                 gen=taujump+1;
                              else
                                  {pops[i]->size=popsize(gen,i);
                                  pops[i]->fix();
-                                 }
+                                 pops[i]->mutatedown(poicond1(2*Uvar*pops[i]->size)); }
                         }
 
 		      if (euroflag==0) //If a split between Af and Eur populations has occured apply migration
@@ -237,8 +250,6 @@ int main(int argc, char *argv[])
                         else
                            pops[i]->populate_from((1-m)*(pops[i]->prob())+m*(pops[1-i]->prob()),popsize(gen-1,i));
                     }
-          //std::stringstream result;
-          //std::copy(pops[0]->alleleholders.begin(), pops[0]->alleleholders.end(), std::ostream_iterator<int>(result, " "));
 
 		      gen--; //Next generation please
 
