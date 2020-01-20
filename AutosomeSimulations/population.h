@@ -19,6 +19,7 @@ class population
 
 		~population();  // class destructor
 		double frequency;
+		double freq();
 		double prob();//Expected frequency of deleterious allele post selection
 		void mutateup(int n);// n deleterious mutations occur
 		void mutatedown(int n);// n beneficial mutations occur
