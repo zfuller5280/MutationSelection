@@ -56,7 +56,7 @@ class population_male
 		double freq();//reutrn frequency
 		double prob();//Expected frequency of deleterious allele post selection
 		void mutateup(int n);// n deleterious mutations occur
-
+		void mutatedown(int n);
 		void clear(); //Fix for beneficial
 		void fix(); //Fix for deleterious
 		int size;

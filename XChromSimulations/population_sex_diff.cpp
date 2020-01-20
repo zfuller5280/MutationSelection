@@ -93,6 +93,17 @@ void population::mutatedown(int n)
 
 }
 
+void population_male::mutatedown(int n)
+{
+     for (int i=0;i<n;i++)
+     {
+       if ((alleleholders[1]!=0))
+       {alleleholders[1]-=1;
+       alleleholders[0]+=1;}
+     }
+
+}
+
 
 void population::clear()
 {

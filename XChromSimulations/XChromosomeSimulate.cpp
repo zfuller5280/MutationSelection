@@ -107,6 +107,9 @@ int main(int argc, char *argv[]){
           if ((total_allele_count > 0)||(gen<taujump)){
             pops[0]->mutateup(poi( mutU*(2*pops[0]->size-pops[0]->allelenum())));
             male_pops[0]->mutateup(poi( mutU*(pops[0]->size-pops[0]->allelenum())));
+
+            pops[0]->mutatedown(poi( mutU*pops[0]->allelenum()));
+            male_pops[0]->mutatedown(poi( mutU*pops[0]->allelenum()));
           }
           else if ((total_allele_count==0) and gen >= taujump){
             int f_gen = int(-log( BRand::Controller.nextOpened())* (1./(mutU * 2 * pops[0]->size)));
@@ -115,9 +118,11 @@ int main(int argc, char *argv[]){
             gen-=min(f_gen, m_gen);
             if (m_gen<= f_gen){
               male_pops[0]->mutateup(poicond1(malemutU*male_pops[0]->size));
+              male_pops[0]->mutatedown(poicond1(malemutU*male_pops[0]->size));
             }
             else if (m_gen > f_gen){
               pops[0]->mutateup(poicond1(mutU*2*pops[0]->size));
+              pops[0]->mutatedown(poicond1(mutU*2*pops[0]->size));
             }
 
           }
