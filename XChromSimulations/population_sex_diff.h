@@ -2,6 +2,7 @@
 #ifndef POPULATION_H
 #define POPULATION_H
 #include <vector>
+#include <boost/random/mersenne_twister.hpp>
 
 class population
 {
@@ -27,7 +28,7 @@ class population
 		int size;
 		int allelenum(); //number of copies of  deleterious allel
 		population& operator= (const population &Source); //copy one pop into the other. used to create Europeans from Africans
-
+		boost::mt19937 gent_b;
 
 	private:
 
@@ -61,7 +62,7 @@ class population_male
 		void fix(); //Fix for deleterious
 		int size;
 		int allelenum(); //number of copies of  deleterious allel
-
+		boost::mt19937 gent_b;
 
 
 	private:

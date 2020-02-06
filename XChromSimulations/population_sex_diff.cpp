@@ -15,7 +15,7 @@
   using boost::variate_generator;
 
 //Mersenne twister RNG from Boost
-boost::mt19937 gent;
+boost::mt19937 gent_b;
 
 int boost_binom(double n, double p);
 
@@ -241,7 +241,7 @@ int boost_binom(double n, double p) //Regular binomial random variate (Boost)
 
 {
       boost::random::binomial_distribution<> dist(n, p);
-      return dist(gent);
+      return dist(gent_b);
 }
 
 int population::choose_allele()
