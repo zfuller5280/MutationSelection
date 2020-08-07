@@ -19,6 +19,8 @@ g++ -O3 -std=c++11 BRand.cpp population_sex_diff.cpp x_simulator.cpp -o x_simula
 ##Autosome
 g++ -O3 -std=c++11 BRand.cpp population.cpp simulator.cpp -o simulator
 
+All other .cpp files for the modules can be compiled as usual. (e.g., g++ -O3 -std=c++11 prior-pdf.cpp -o prior-pdf)
+
 To run using pakman (all using OpenMPI for parallelization, here illustrated using 5 processors):
 1. Standard ABC rejection (here, an exact match with epsilon=0)
 mpiexec -n 5 pakman mpi rejection --number-accept 10000 --epsilon 0 --parameter-names=q --simulator="./simulator 1e-6 ${NUM} .5 1 0 0 1 1 11 1 ${SAMP_SIZE}" --prior-sampler="./prior_sampler -6 0" > ${COUNT}.${S}.${H}.${MUT}.mpi.binomial.posterior.txt
