@@ -190,7 +190,7 @@ int main(int argc, char *argv[]){
 
        int total_allele_count = (pops[0]->allelenum()) + (male_pops[0]->allelenum());
        int total_pop_size = (pops[0]->size + male_pops[0]->size);
-       cout<<gen<<"\t"<<total_allele_count<<"\t"<<total_pop_size<<"\t"<<(total_allele_count*1.)/(1.5*total_pop_size)<<"\t"<<mutU<<"\t"<<femalemutU<<"\t"<<malemutU<<"\n";
+       cout<<gen<<"\t"<<total_allele_count<<"\t"<<total_pop_size<<"\t"<<(total_allele_count*1.)/(1.5*total_pop_size)<<"\t"<<mutU<<"\t"<<femalemutU<<"\t"<<malemutU<<"\t"<<pops[0]->allelenum()<<"\t"<<male_pops[0]->allelenum()<<"\n";
      }
      return EXIT_SUCCESS;
 }
