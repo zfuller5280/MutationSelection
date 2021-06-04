@@ -1,0 +1,50 @@
+#!/bin/bash
+set -euo pipefail
+
+# Process arguments
+usage="Usage: $0 [population_size (default 10)]"
+
+# Check for help flag
+if [ $# -ge 1 ]
+then
+    if [ $1 == "--help" ] || [ $1 == "-h" ]
+    then
+        echo $usage 1>&2
+        exit 0
+    fi
+fi
+
+# Set population size
+if [ $# == 1 ]
+then
+    pop_size=$1
+else
+    pop_size=10
+fi
+
+# Run ABC smc
+echo "Running ABC SMC with population-size=$pop_size"
+"@PROJECT_BINARY_DIR@/src/pakman" serial smc \
+    --discard-child-stderr \
+    --population-size=$pop_size \
+    --epsilons=4,3,2,1,0 \
+    --ignore-errors \
+    --parameter-names=tcycle \
+    --simulator="./run-cell-standard-simulator.sh cell_count.txt" \
+    --prior-sampler="./cell-prior-sampler 5 25" \
+    --prior-pdf="./cell-prior-pdf 5 25" \
+    --perturber="./cell-perturber 1" \
+    --perturbation-pdf="./cell-perturbation-pdf 1" \
+    > abc-smc-serial.out
+
+echo "Results saved in abc-smc-serial.out"
+
+# Create histogram
+if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
+then
+    @PYTHON_EXECUTABLE@ plot-histogram.py \
+        --epsilon '{4,3,...,0}' --inputfile abc-smc-serial.out \
+        --bboxtight --outputfile abc-smc-serial-histogram.png
+
+    echo "Histogram saved in abc-smc-serial-histogram.png"
+fi
