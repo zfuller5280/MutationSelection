@@ -29,6 +29,8 @@
 #include "population_sex_diff_v2.h"
 #include "BRand.hpp"
 #define taujump 56000
+#define mut_ratio 0.01
+
 #include <boost/math/distributions/binomial.hpp>
 
 
@@ -52,8 +54,8 @@ int distance_function;
 int pop_sample_size;
 
 //Population size changes from Schiffles and Durbin (2015) inferred by MSMC of Europeans
-int Ne[56]= {14448,14068,14068,14464,14464,15208,15208,16256,16256,17618,17618,19347,19347,21534,21534,24236,24236,27367,27367,30416,30416,32060,32060,31284,29404,26686,23261,18990,16490,16490,12958,12958,9827,9827,7477,7477,5791,5791,4670,4670,3841,3841,3372,3372,3287,3359,3570,4095,4713,5661,7540,11375,14310,13292,14522,613285};
-int T[56]={55940,51395,47457,43984,40877,38067,35501,33141,30956,28922,27018,25231,23545,21951,20439,19000,17628,16318,15063,13859,12702,11590,10517,9482,8483,7516,6580,5672,5520,5156,4817,4500,4203,3922,3656,3404,3165,2936,2718,2509,2308,2116,1930,1752,1579,1413,1252,1096,945,798,656,517,383,252,124,0};
+int Ne[57]= {14448,14068,14068,14464,14464,15208,15208,16256,16256,17618,17618,19347,19347,21534,21534,24236,24236,27367,27367,30416,30416,32060,32060,31284,29404,26686,23261,18990,16490,16490,12958,12958,9827,9827,7477,7477,5791,5791,4670,4670,3841,3841,3372,3372,3287,3359,3570,4095,4713,5661,7540,11375,14310,13292,14522,613285,5000000};
+int T[57]={55940,51395,47457,43984,40877,38067,35501,33141,30956,28922,27018,25231,23545,21951,20439,19000,17628,16318,15063,13859,12702,11590,10517,9482,8483,7516,6580,5672,5520,5156,4817,4500,4203,3922,3656,3404,3165,2936,2718,2509,2308,2116,1930,1752,1579,1413,1252,1096,945,798,656,517,383,252,124,50,0};
 
 int randflag=0;
 using namespace std;
@@ -166,8 +168,8 @@ int main(int argc, char *argv[]){
             pops[0]->mutateup(poi( femalemutU*(2*pops[0]->size-pops[0]->allelenum())));
             male_pops[0]->mutateup(poi( malemutU*(male_pops[0]->size-male_pops[0]->allelenum())));
 
-            pops[0]->mutatedown(poi( femalemutU*pops[0]->allelenum()));
-            male_pops[0]->mutatedown(poi( malemutU*male_pops[0]->allelenum()));
+            pops[0]->mutatedown(poi( femalemutU*mut_ratio*pops[0]->allelenum()));
+            male_pops[0]->mutatedown(poi( malemutU*mut_ratio*male_pops[0]->allelenum()));
           }
           else if ((total_allele_count==0) ){
             int f_gen = int(-log( BRand::Controller.nextOpened())* (1./(femalemutU * 2 * pops[0]->size)));
@@ -197,13 +199,13 @@ int main(int argc, char *argv[]){
             if (m_gen<= f_gen){
               male_pops[0]->size=popsize(demographic_model,dem_uncert,gen-1,0);
               male_pops[0]->fix();
-              male_pops[0]->mutatedown(poicond1(malemutU*male_pops[0]->size));
+              male_pops[0]->mutatedown(poicond1(malemutU*mut_ratio*male_pops[0]->size));
               //male_pops[0]->mutatedown(poicond1(malemutU*male_pops[0]->size));
             }
             else if (m_gen > f_gen){
               pops[0]->size=popsize(demographic_model,dem_uncert,gen-1,0);
               pops[0]->fix();
-              pops[0]->mutatedown(poicond1(femalemutU*2*pops[0]->size));
+              pops[0]->mutatedown(poicond1(femalemutU*mut_ratio*2*pops[0]->size));
               //pops[0]->mutatedown(poicond1(femalemutU*2*pops[0]->size));
             }
           }
