@@ -11,7 +11,7 @@ unsigned long BRand::State[N] = {0x0UL};
 int BRand::P = 0;
 
 /** generate new state vector */
-void BRand::gen_state() {
+void BRand::gen_state() { 
 	for (int i = 0; i < (N - M); ++i){
 		State[i] = State[i + M] ^ twiddle(State[i], State[i + 1]);
 	}
@@ -23,7 +23,7 @@ void BRand::gen_state() {
 }
 
 /** init by 32 bit seed */
-void BRand::seed(unsigned long s) {
+void BRand::seed(unsigned long s) {  
 	State[0] = s & 0xFFFFFFFFUL; // for > 32 bit machines
 	for (int i = 1; i < N; ++i) {
 		State[i] = 1812433253UL * (State[i - 1] ^ (State[i - 1] >> 30)) + i;
