@@ -1,0 +1,37 @@
+#!/bin/bash
+set -euo pipefail
+
+# Process arguments
+if [ $# -ne 2 ]
+then
+    echo "Usage: $0 EPSILONS POP_SIZE" 1>&2
+    exit 1
+fi
+
+epsilons="$1"
+pop_size="$2"
+
+# Create temporary files
+temp_number_file=$(mktemp)
+temp_input_file=$(mktemp)
+
+# Ensure temporary files are cleaned up if error occurs
+trap "rm -f $temp_number_file $temp_input_file" ERR
+
+# Store 0 in temporary number file
+echo 0 > $temp_number_file
+
+# Run pakman
+"@PROJECT_BINARY_DIR@/src/pakman" serial smc $temp_input_file \
+    --parameter-names=p \
+    --population-size=$pop_size \
+    --epsilons=$epsilons \
+    --simulator="'@CMAKE_CURRENT_BINARY_DIR@/../abc-rejection/accept-if-epsilon-plus-parameter-is-even.sh'" \
+    --prior-sampler="'@CMAKE_CURRENT_BINARY_DIR@/../abc-rejection/increment-and-print-number.sh' $temp_number_file" \
+    --perturber="'@CMAKE_CURRENT_BINARY_DIR@/perturber.sh' $epsilons" \
+    --prior-pdf="'@CMAKE_CURRENT_BINARY_DIR@/prior-pdf.sh'" \
+    --perturbation-pdf="'@CMAKE_CURRENT_BINARY_DIR@/perturbation-pdf.sh' $epsilons"
+
+
+# Clean up temporary files
+rm -f $temp_number_file $temp_input_file

@@ -1,0 +1,69 @@
+#!@PYTHON_EXECUTABLE@
+import matplotlib.pyplot as plt
+import numpy as np
+import csv
+import sys
+
+# Process arguments
+if not (len(sys.argv) == 4):
+    print("Usage: {} SCALING_CSV_FILE SPEEDUP_PLOT EFFICIENCY_PLOT".format(sys.argv[0]))
+    exit(1)
+
+# Read data
+num_procs = []
+compute_time = []
+with open(sys.argv[1], 'r') as csvfile:
+
+    data_reader = csv.reader(csvfile, delimiter=',')
+
+    # Skip header
+    next(data_reader)
+
+    # Process line by line
+    for row in data_reader:
+        num_procs.append(float(row[0]))
+        compute_time.append(float(row[1]))
+
+num_procs = np.array(num_procs)
+compute_time = np.array(compute_time)
+speedup = compute_time[0] / compute_time
+efficiency = speedup / num_procs
+
+# Estimate slope
+num_procs_log = np.log(num_procs)
+speedup_log = np.log(speedup)
+
+A = np.vstack([num_procs_log, np.ones(len(num_procs_log))]).T
+slope, offset = np.linalg.lstsq(A, speedup_log, rcond=-1)[0]
+
+print("Estimated slope: {}".format(slope))
+
+# Plot data and fitted line
+plt.figure()
+
+plt.loglog(num_procs, speedup, 'ko', label="data")
+plt.loglog([num_procs[0], num_procs[-1]],
+    [np.exp(offset + num_procs_log[0]*slope),
+        np.exp(offset + num_procs_log[-1]*slope)],
+    'b-', label="estimated slope: {}".format(slope))
+
+# Formatting
+plt.legend()
+plt.xlabel("Number of processes used")
+plt.ylabel("Speedup")
+
+# Save figure
+plt.savefig(sys.argv[2])
+plt.close()
+
+# Plot efficiency
+plt.figure()
+plt.loglog(num_procs, efficiency, '-gd')
+
+# Formatting
+plt.xlabel("Number of processes used")
+plt.ylabel("Efficiency")
+
+# Save figure
+plt.savefig(sys.argv[3])
+plt.close()
