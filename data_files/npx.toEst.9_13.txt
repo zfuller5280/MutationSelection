@@ -1,0 +1,16 @@
+AMELX aws_smallAcc/24/AMELX/AMELX.24.smallAcc.gnomad.canonical.posterior.txt
+DDX3X aws_smallAcc/24/DDX3X/DDX3X.24.smallAcc.gnomad.canonical.posterior.txt
+EIF1AX aws_smallAcc/24/EIF1AX/EIF1AX.24.smallAcc.gnomad.canonical.posterior.txt
+KDM5C aws_smallAcc/24/KDM5C/KDM5C.24.smallAcc.gnomad.canonical.posterior.txt
+KDM6A aws_smallAcc/24/KDM6A/KDM6A.24.smallAcc.gnomad.canonical.posterior.txt
+NLGN4X aws_smallAcc/24/NLGN4X/NLGN4X.24.smallAcc.gnomad.canonical.posterior.txt
+PRKX aws_smallAcc/24/PRKX/PRKX.24.smallAcc.gnomad.canonical.posterior.txt
+RBMX aws_smallAcc/24/RBMX/RBMX.24.smallAcc.gnomad.canonical.posterior.txt
+RPS4X aws_smallAcc/24/RPS4X/RPS4X.24.smallAcc.gnomad.canonical.posterior.txt
+SOX3 aws_smallAcc/24/SOX3/SOX3.24.smallAcc.gnomad.canonical.posterior.txt
+TBL1X aws_smallAcc/24/TBL1X/TBL1X.24.smallAcc.gnomad.canonical.posterior.txt
+TMSB4X aws_smallAcc/24/TMSB4X/TMSB4X.24.smallAcc.gnomad.canonical.posterior.txt
+TSPYL2 aws_smallAcc/24/TSPYL2/TSPYL2.24.smallAcc.gnomad.canonical.posterior.txt
+TXLNG aws_smallAcc/24/TXLNG/TXLNG.24.smallAcc.gnomad.canonical.posterior.txt
+USP9X aws_smallAcc/24/USP9X/USP9X.24.smallAcc.gnomad.canonical.posterior.txt
+ZFX aws_smallAcc/24/ZFX/ZFX.24.smallAcc.gnomad.canonical.posterior.txt
