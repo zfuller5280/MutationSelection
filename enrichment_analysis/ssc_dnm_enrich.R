@@ -9,6 +9,22 @@ require(gridExtra)
 library(dplyr)
 library("tidyverse")
 
+#Read in simulation input data
+updated_sim_input<-read.table("sim.check.txt", sep="\t", header=T)
+an_too_low<-updated_sim_input[(updated_sim_input$flag1=="AN_too_low"),]
+updated_sim_input<-updated_sim_input[!(updated_sim_input$flag1=="AN_too_low"),]
+mu_na<-updated_sim_input[is.na((updated_sim_input$mu_lof)),]
+updated_sim_input<-updated_sim_input[!is.na((updated_sim_input$mu_lof)),]
+updated_sim_input<-updated_sim_input[updated_sim_input$mu_lof>0,]
+updated_n_occur<-data.frame(table(updated_sim_input$SYMBOL))
+duplicated_genes<-updated_n_occur[updated_n_occur$Freq>1,]
+updated_sim_input<-updated_sim_input[!(updated_sim_input$SYMBOL %in% updated_n_occur[updated_n_occur$Freq>1,]$Var1),]
+head(updated_sim_input)
+
+#Read in our posterior data for hs
+exp_posteriors<-read.table("autosome_posteriors.8_11.tsv", header=T, sep="\t")
+canonical_gnomad<-read.table("canonical_gnomad.data.tsv", header=T, sep="\t")
+
 #Raw SSC total DNMs
 raw_ssc_dnms<-read.csv("raw_ssc_dnms.csv",skip=1)
 head(raw_ssc_dnms)
