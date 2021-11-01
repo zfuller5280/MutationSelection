@@ -7,7 +7,7 @@ File descriptions:
 
 -forZach_synexp_extended_denovoWEST_results.txt: Provided by Kaitlyn Samocha. Contains expected number of mutations for each gene for synonymous and LOF mutations
 
--hs_plots.R: Contains scripts to plot main figures in manuscript, including enrichment analysis for DDD 
+-hs_plots.R: Contains scripts to plot main figures in manuscript, including enrichment analysis for DDD (OLD!!!, keeping here for reference)
 
 -ssc_dnm_enrich.R: Contains scripts to plot figures and perform enrichment analysis in SSC
 
