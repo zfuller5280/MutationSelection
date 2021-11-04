@@ -11,15 +11,15 @@ library(MASS)
 library("tram")
 
 #Determine which genes do not fit the model (i.e., too high of LoF freqs because of annotation)
-neutral_auto_sims<-read.table("/Volumes/Seagate/abc_hs/automsome_neutral_summary.txt")
+neutral_auto_sims<-read.table("../data_files/automsome_neutral_summary.txt")
 names(neutral_auto_sims)<-c("gene", "mu_lof", "AF_nfe", "AN_nfe", "NFE_k", "mean_sim_AF", "obs_ptile", "mean_cnt", "exact_count", "median", "lower_mid", "upper_mid", "count_tol_2", "count_tol_5", "count_tol_10")
 head(neutral_auto_sims)
 wrongModel_genes<-(neutral_auto_sims[neutral_auto_sims$obs_ptile>=.9, ])
-neutral_x_sims<-read.table("/Volumes/Seagate/abc_hs/x_neutral_summary.txt")
+neutral_x_sims<-read.table("../data_files/x_neutral_summary.txt")
 names(neutral_x_sims)<-c("gene", "mu_lof", "AF_nfe", "AN_nfe", "NFE_k", "mean_sim_AF", "obs_ptile", "mean_cnt", "exact_count", "median", "lower_mid", "upper_mid", "count_tol_2", "count_tol_5", "count_tol_10")
 head(neutral_x_sims)
 wrongModel_x_genes<-(neutral_x_sims[neutral_x_sims$obs_ptile>=.9, ])
-neutral_par_sims<-read.table("/Volumes/Seagate/abc_hs/par_neutral_summary.txt")
+neutral_par_sims<-read.table("../data_files/par_neutral_summary.txt")
 names(neutral_par_sims)<-c("gene", "mu_lof", "AF_nfe", "AN_nfe", "NFE_k", "mean_sim_AF", "obs_ptile", "mean_cnt", "exact_count", "median", "lower_mid", "upper_mid", "count_tol_2", "count_tol_5", "count_tol_10")
 head(neutral_par_sims)
 wrongModel_par_genes<-(neutral_par_sims[neutral_par_sims$obs_ptile>=.9, ])
@@ -27,14 +27,14 @@ valid_x_input<-subset(x_chr_input, !(x_chr_input$SYMBOL %in% wrongModel_x_genes$
 valid_x_input<-subset(valid_x_input, !(valid_x_input$SYMBOL %in% par_gene_list))
 
 #Read in X Chr data
-x_param_posts<-read.table("/VOLUMES/Seagate/abc_hs/expanded_outfiles/xchr.posteriors.h_and_hs.8_12.tsv")
+x_param_posts<-read.table("../data_files/xchr.posteriors.h_and_hs.8_12.tsv")
 names(x_param_posts)<-c("Gene", "s_unscaled_hpd_low", "s_unscaled_hpd_high", "s_unscaled_hpd_map", "s_log10_ci_low", "s_log10_ci_high", "s_log10_map","hs_unscaled_hpd_low", "hs_unscaled_hpd_high", "hs_unscaled_hpd_map", "hs_log10_ci_low", "hs_log10_ci_high", "hs_log10_map")
 x_param_posts<-subset(x_param_posts, x_param_posts$Gene %in% valid_x_input$SYMBOL)
 x_param_posts<-merge(x_param_posts, x_chr_exp[,c("Gene","unscaled_hpd_low","unscaled_hpd_high","unscaled_hpd_map","log10_ci_low","log10_ci_high","log10_map","2.5th","97.5th","mean","median")], by="Gene")
 cat(subset(valid_x_input, !(valid_x_input$SYMBOL %in% x_param_posts$Gene))$SYMBOL,sep="\n")
 
-ddd_vars<-read.table("~/Downloads/DDD_RUMC_GDX_denovos_cadd_shet_wweights_2020_01_17.txt",sep="\t",header=T)
-ddd_ids<-read.table("fordist_joint_dnm_ID_sex_2019_08_30.txt",header=T)
+ddd_vars<-read.table("./DDD_RUMC_GDX_denovos_cadd_shet_wweights_2020_01_17.txt",sep="\t",header=T)
+ddd_ids<-read.table("./fordist_joint_dnm_ID_sex_2019_08_30.txt",header=T)
 head(ddd_vars)
 male_ids<-subset(ddd_ids, ddd_ids$sex=="M")$id
 female_ids<-subset(ddd_ids, ddd_ids$sex=="F")$id
