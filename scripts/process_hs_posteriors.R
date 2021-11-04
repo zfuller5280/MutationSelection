@@ -11,7 +11,7 @@ library(MASS)
 library("tram")
 
 #Read in simulation input data
-updated_sim_input<-read.table("sim.check.txt", sep="\t", header=T)
+updated_sim_input<-read.table("../data_files/sim.check.txt", sep="\t", header=T)
 an_too_low<-updated_sim_input[(updated_sim_input$flag1=="AN_too_low"),]
 updated_sim_input<-updated_sim_input[!(updated_sim_input$flag1=="AN_too_low"),]
 mu_na<-updated_sim_input[is.na((updated_sim_input$mu_lof)),]
@@ -26,20 +26,20 @@ autosome_input<-subset(updated_sim_input, !(updated_sim_input$chromosome=="X"))
 x_raw_input<-subset(updated_sim_input, (updated_sim_input$chromosome=="X"))
 
 #Read in PAR genes
-par_list<-read.table("par_hs_input.data.7_7.tsv", header=T)
+par_list<-read.table("../data_files/par_hs_input.data.7_7.tsv", header=T)
 par_gene_list<-par_list$gene
 x_chr_input<-subset(x_raw_input, !(x_raw_input$SYMBOL %in% par_gene_list))
 
 #Determine which genes do not fit the model (i.e., too high of LoF freqs because of annotation)
-neutral_auto_sims<-read.table("/Volumes/Seagate/abc_hs/automsome_neutral_summary.txt")
+neutral_auto_sims<-read.table("../data_files/automsome_neutral_summary.txt")
 names(neutral_auto_sims)<-c("gene", "mu_lof", "AF_nfe", "AN_nfe", "NFE_k", "mean_sim_AF", "obs_ptile", "mean_cnt", "exact_count", "median", "lower_mid", "upper_mid", "count_tol_2", "count_tol_5", "count_tol_10")
 head(neutral_auto_sims)
 wrongModel_genes<-(neutral_auto_sims[neutral_auto_sims$obs_ptile>=.9, ])
-neutral_x_sims<-read.table("/Volumes/Seagate/abc_hs/x_neutral_summary.txt")
+neutral_x_sims<-read.table("../data_files/x_neutral_summary.txt")
 names(neutral_x_sims)<-c("gene", "mu_lof", "AF_nfe", "AN_nfe", "NFE_k", "mean_sim_AF", "obs_ptile", "mean_cnt", "exact_count", "median", "lower_mid", "upper_mid", "count_tol_2", "count_tol_5", "count_tol_10")
 head(neutral_x_sims)
 wrongModel_x_genes<-(neutral_x_sims[neutral_x_sims$obs_ptile>=.9, ])
-neutral_par_sims<-read.table("/Volumes/Seagate/abc_hs/par_neutral_summary.txt")
+neutral_par_sims<-read.table("../data_files/par_neutral_summary.txt")
 names(neutral_par_sims)<-c("gene", "mu_lof", "AF_nfe", "AN_nfe", "NFE_k", "mean_sim_AF", "obs_ptile", "mean_cnt", "exact_count", "median", "lower_mid", "upper_mid", "count_tol_2", "count_tol_5", "count_tol_10")
 head(neutral_par_sims)
 wrongModel_par_genes<-(neutral_par_sims[neutral_par_sims$obs_ptile>=.9, ])
@@ -47,17 +47,17 @@ valid_x_input<-subset(x_chr_input, !(x_chr_input$SYMBOL %in% wrongModel_x_genes$
 valid_x_input<-subset(valid_x_input, !(valid_x_input$SYMBOL %in% par_gene_list))
 
 #X Chr Posteriors
-x_chr_exp<-read.table("/VOLUMES/Seagate/abc_hs/expanded_outfiles/x_chr_posteriors.8_10.txt")
+x_chr_exp<-read.table("../data_files/x_chr_posteriors.8_10.txt")
 names(x_chr_exp)<-c("Gene","unscaled_hpd_low","unscaled_hpd_high","unscaled_hpd_map","log10_ci_low","log10_ci_high","log10_map","2.5th","97.5th","mean","median")
 x_chr_exp<-subset(x_chr_exp, !(x_chr_exp$Gene %in% par_gene_list))
 x_chr_exp<-subset(x_chr_exp, !(x_chr_exp$Gene %in% wrongModel_x_genes$gene))
-x_param_posts<-read.table("/VOLUMES/Seagate/abc_hs/expanded_outfiles/xchr.posteriors.h_and_hs.8_12.tsv")
+x_param_posts<-read.table("../data_files/xchr.posteriors.h_and_hs.8_12.tsv")
 names(x_param_posts)<-c("Gene", "s_unscaled_hpd_low", "s_unscaled_hpd_high", "s_unscaled_hpd_map", "s_log10_ci_low", "s_log10_ci_high", "s_log10_map","hs_unscaled_hpd_low", "hs_unscaled_hpd_high", "hs_unscaled_hpd_map", "hs_log10_ci_low", "hs_log10_ci_high", "hs_log10_map")
 x_param_posts<-subset(x_param_posts, x_param_posts$Gene %in% valid_x_input$SYMBOL)
 x_param_posts<-merge(x_param_posts, x_chr_exp[,c("Gene","unscaled_hpd_low","unscaled_hpd_high","unscaled_hpd_map","log10_ci_low","log10_ci_high","log10_map","2.5th","97.5th","mean","median")], by="Gene")
 
 #Autosomal/PAR genes
-exp_posteriors<-read.table("/VOLUMES/Seagate/abc_hs/expanded_outfiles/autosome_posteriors.10_11.txt") #17440 on 8_19
+exp_posteriors<-read.table("../data_files/autosome_posteriors.10_11.txt") #17440 on 8_19
 names(exp_posteriors)<-c("Gene","unscaled_hpd_low","unscaled_hpd_high","unscaled_hpd_map","log10_ci_low","log10_ci_high","log10_map","2.5th","97.5th","mean","median")
 exp_posteriors<-exp_posteriors[!duplicated(exp_posteriors$Gene),] #Some mistakes in generating posterios, so a small number of genes are duplcited. Remove here
 exp_par_posteriors<-subset(exp_posteriors, exp_posteriors$Gene %in% par_gene_list)
@@ -67,10 +67,10 @@ subset(exp_posteriors, !(exp_posteriors$Gene %in% autosome_input$SYMBOL))
 exp_posteriors<-subset(exp_posteriors, (exp_posteriors$Gene %in% autosome_input$SYMBOL))
 
 #Label genes if they are on the NPX and have a Y homolog
-npy_genes<-read.table("~/Documents/NPY_genes.txt")
+npy_genes<-read.table("../data_files/NPY_genes.txt")
 npy_input<-subset(x_chr_input, (x_chr_input$SYMBOL %in% npy_genes$V1))
 npy_input$chrom<-24
-npx_posts<-read.table("/VOLUMES/Seagate/abc_hs/expanded_outfiles/npx_posteriors.9_13.txt")
+npx_posts<-read.table("../data_files/npx_posteriors.9_13.txt")
 names(npx_posts)<-c("Gene","unscaled_hpd_low","unscaled_hpd_high","unscaled_hpd_map","log10_ci_low","log10_ci_high","log10_map","2.5th","97.5th","mean","median")
 head(npx_posts)
 npx_xmodel<-subset(x_param_posts, Gene %in%  npx_posts$Gene)
@@ -85,7 +85,7 @@ problematic_df<-rbind(problematic_df, data.frame(gene=wrongModel_x_genes$gene, f
 problematic_df<-problematic_df[!duplicated(problematic_df$gene),]
 
 #Get external data for Weghorn et al. estimates
-weghorn<-read.table("~/Downloads/msz092_supplementary_data/Supplementary_Table_1.txt",header=T)
+weghorn<-read.table("../data_files/Supplementary_Table_1.txt",header=T)
 head(weghorn)
 merged_auto_weghorn<-merge(weghorn, exp_posteriors, by.x="Gene", by.y="Gene")
 merged_x_weghorn<-merge(weghorn, x_chr_exp, by.x="Gene", by.y="Gene")
@@ -108,7 +108,7 @@ length(x_chr_exp[x_chr_exp$log10_map>-3,1])/length(x_chr_exp[,1])
 length(x_chr_exp[x_chr_exp$log10_ci_low>-3,1])/length(x_chr_exp[,1])
 
 #Get X-inactive status
-tukiainen_escape<-read.csv("tukiaianen_xci_status.csv")
+tukiainen_escape<-read.csv("../data_files/tukiaianen_xci_status.csv")
 tukiainen_escape<-tukiainen_escape[tukiainen_escape$Region=="nonPAR",]
 
 tukiainen_escape<-tukiainen_escape[!(tukiainen_escape$Gene.name %in% npy_genes$V1),]
