@@ -10,7 +10,7 @@ library(dplyr)
 library("tidyverse")
 
 #Read in simulation input data
-updated_sim_input<-read.table("sim.check.txt", sep="\t", header=T)
+updated_sim_input<-read.table("../data_files/sim.check.txt", sep="\t", header=T)
 an_too_low<-updated_sim_input[(updated_sim_input$flag1=="AN_too_low"),]
 updated_sim_input<-updated_sim_input[!(updated_sim_input$flag1=="AN_too_low"),]
 mu_na<-updated_sim_input[is.na((updated_sim_input$mu_lof)),]
@@ -22,11 +22,11 @@ updated_sim_input<-updated_sim_input[!(updated_sim_input$SYMBOL %in% updated_n_o
 head(updated_sim_input)
 
 #Read in our posterior data for hs
-exp_posteriors<-read.table("autosome_posteriors.8_11.tsv", header=T, sep="\t")
-canonical_gnomad<-read.table("canonical_gnomad.data.tsv", header=T, sep="\t")
+exp_posteriors<-read.table("../data_files/autosome_posteriors.8_11.tsv", header=T, sep="\t")
+canonical_gnomad<-read.table("../data_files/canonical_gnomad.data.tsv", header=T, sep="\t")
 
 #Raw SSC total DNMs
-raw_ssc_dnms<-read.csv("raw_ssc_dnms.csv",skip=1)
+raw_ssc_dnms<-read.csv("./raw_ssc_dnms.csv",skip=1)
 head(raw_ssc_dnms)
 table(raw_ssc_dnms$Consequence)
 table(raw_ssc_dnms$Chr)
