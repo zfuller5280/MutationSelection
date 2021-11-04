@@ -9,7 +9,7 @@ library(dplyr)
 library("tidyverse")
 
 #Read in simulation input data
-updated_sim_input<-read.table("sim.check.txt", sep="\t", header=T)
+updated_sim_input<-read.table("../data_files/sim.check.txt", sep="\t", header=T)
 an_too_low<-updated_sim_input[(updated_sim_input$flag1=="AN_too_low"),]
 updated_sim_input<-updated_sim_input[!(updated_sim_input$flag1=="AN_too_low"),]
 mu_na<-updated_sim_input[is.na((updated_sim_input$mu_lof)),]
@@ -21,14 +21,14 @@ updated_sim_input<-updated_sim_input[!(updated_sim_input$SYMBOL %in% updated_n_o
 head(updated_sim_input)
 
 #Read in our posterior data for hs
-exp_posteriors<-read.table("autosome_posteriors.8_11.tsv", header=T, sep="\t")
-canonical_gnomad<-read.table("canonical_gnomad.data.tsv", header=T, sep="\t")
+exp_posteriors<-read.table("../data_files/autosome_posteriors.8_11.tsv", header=T, sep="\t")
+canonical_gnomad<-read.table("../data_files/canonical_gnomad.data.tsv", header=T, sep="\t")
 
 #DDD Autosomal Enrichment Plot
 #Our hs point estimates
 #DDD data from Samocha
-denovo_west<-read.table("forZach_synexp_extended_denovoWEST_results.txt",sep="\t",header=T)
-gnomad_mu<-read.table("~/Downloads/gnomad.v2.1.1.lof_metrics.by_transcript.txt",header=T,fill=T,sep='\t')
+denovo_west<-read.table("./forZach_synexp_extended_denovoWEST_results.txt",sep="\t",header=T)
+gnomad_mu<-read.table("../data_files/gnomad.v2.1.1.lof_metrics.by_transcript.txt",header=T,fill=T,sep='\t')
 canonical_gnomad<-gnomad_mu[gnomad_mu$canonical=="true",]
 denovo_west<-merge(denovo_west, canonical_gnomad, by.x="symbol", by.y="gene")
 auto_dnm_counts<-merge(denovo_west, exp_posteriors, by.x="symbol", by.y="Gene")
