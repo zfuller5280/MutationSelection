@@ -8,13 +8,13 @@ library(dplyr)
 library(MASS)
 
 #X Chr Posteriors
-avg_x_param_posts<-read.table("/VOLUMES/Seagate/abc_hs/expanded_outfiles/x_chr_avg_hs.txt")
+avg_x_param_posts<-read.table("../data_files/x_chr_avg_hs.txt")
 names(avg_x_param_posts)<-c("Gene", "s_unscaled_hpd_low", "s_unscaled_hpd_high", "s_unscaled_hpd_map", "s_log10_ci_low", "s_log10_ci_high", "s_log10_map","hs_unscaled_hpd_low", "hs_unscaled_hpd_high", "hs_unscaled_hpd_map", "hs_log10_ci_low", "hs_log10_ci_high", "hs_log10_map","avg_hs_unscaled_hpd_low", "avg_hs_unscaled_hpd_high", "avg_hs_unscaled_hpd_map", "avg_hs_log10_ci_low", "avg_hs_log10_ci_high", "avg_hs_log10_map")
 avg_x_param_posts<-subset(avg_x_param_posts, avg_x_param_posts$Gene %in% x_param_posts$Gene)
 avg_x_param_posts<-avg_x_param_posts[!(duplicated(avg_x_param_posts$Gene)),]
 
 #Autosome Posteriors
-exp_posteriors<-read.table("/Volumes/SeagateBU/Backups.backupdb/Zach’s iMac/2022-05-25-074104/Macintosh HD - Data/Users/zachfuller/autosome_hs.summary_stats.3_30.tsv",header=T)
+exp_posteriors<-read.table("../data_files/autosome_hs.summary_stats.3_30.tsv",header=T)
 
 #Make plot of hs distribution for autosomes
 legend.col <- function(col, lev){
