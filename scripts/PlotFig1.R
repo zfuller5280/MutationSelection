@@ -82,3 +82,23 @@ plot(avg_x_param_posts$hs_log10_map,avg_x_param_posts$ecdf,xlim=c(-7,0),cex=0.5,
 abline(v=-2,lty=3,col="red")
 segments(avg_x_param_posts$hs_log10_ci_low,avg_x_param_posts$ecdf,avg_x_param_posts$hs_log10_ci_high,lwd=.35,col=avg_x_param_posts$Col)
 legend.col(col = rbPal(length(ci_levels)), lev = ci_levels)
+
+#Prepare jitter plots for different hs in different compartments
+x_posteriors_exp_plot<-avg_x_param_posts[!(avg_x_param_posts$Gene %in% par_gene_list),]
+x_posteriors_exp_plot$strong_sel<-ifelse(x_posteriors_exp_plot$avg_hs_log10_ci_low>-2,"strong","other")
+x_posteriors_exp_plot_total<-x_posteriors_exp_plot
+x_posteriors_exp_plot_total$Combined_XCI_status<-"XChrom"
+exp_posteriors$strong_sel<-ifelse(exp_posteriors$log10_ci_low>-2,"strong","other")
+exp_posteriors$Combined_XCI_status<-"Autosomes"
+sampled_subset_posteriors<-exp_posteriors[sample(nrow(exp_posteriors), 1000),]
+plot_cols<-c("Gene","strong_sel","Combined_XCI_status","log10_map")
+x_posteriors_exp_compare<-rbind(sampled_subset_posteriors[,plot_cols], x_posteriors_exp_compare[,plot_cols])
+x_posteriors_exp_compare$Combined_XCI_status<-factor(x_posteriors_exp_compare$Combined_XCI_status, levels=c("Autosomes","XChrom","PAR"),ordered = T)
+dev.off()
+x_posteriors_exp_compare<-subset(x_posteriors_exp_compare, !(Combined_XCI_status=="PAR"))
+#Make jitter plot and show
+ggplot(x_posteriors_exp_compare, aes(x=Combined_XCI_status, y=log10_map)) +
+  geom_boxplot( outlier.shape=NA) + 
+  geom_quasirandom(aes(color=strong_sel),shape=21,bandwidth=0.4,varwidth=TRUE,method="pseudorandom")+
+  xlab("Gene Status") + ylab("log10(hs) MAP") + scale_color_brewer(palette="Paired") + theme_bw()
+
