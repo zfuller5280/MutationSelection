@@ -8,7 +8,7 @@ library(dplyr)
 library(MASS)
 
 #X Chr Posteriors
-avg_x_param_posts<-read.table("avg_x.stats.6_1_22.tsv", header=TRUE)
+avg_x_param_posts<-read.table("../data_files/avg_x.stats.6_1_22.tsv", header=TRUE)
 
 #Autosome Posteriors
 exp_posteriors<-read.table("../data_files/autosome_hs.summary_stats.3_30.tsv",header=T)
